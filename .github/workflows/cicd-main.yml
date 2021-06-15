@@ -58,6 +58,14 @@ jobs:
       env:
         repo: ${{ env.REPO_NAME }}
         main_dir: main
+        
+    - name: bump version
+      uses: ./main/.github/actions/bump-version
+      with:
+        branch_name: ${{ steps.extract_branch.outputs.branch }}
+        package_type: deb
+        proj_file: "./dock-tunnel/DEBIAN/control"
+        working_dir: main
      
     - name: run build 
       if: ${{ github.event_name == 'pull_request' || ( github.event_name == 'push' && github.event.before != 0000000000000000000000000000000000000000) }}
