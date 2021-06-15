@@ -59,6 +59,9 @@ jobs:
         repo: ${{ env.REPO_NAME }}
         main_dir: main
         
+    - name: set up git 
+      run: bash ./.github/scripts/setup-git.bash
+      
     - name: bump version
       uses: ./main/.github/actions/bump-version
       with:
