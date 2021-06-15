@@ -70,8 +70,8 @@ jobs:
         branch_name: ${{ steps.extract_branch.outputs.branch }}
         package_type: deb
         build_dir: ${{ env.BUILD_DIR }}
-        zip_name: ${{ env.REPO_NAME }}
-        upload_location: ${{ env.S3_BUCKET }}/${{ env.REPO_NAME }}
+        zip_name: ${{ env.REPO_NAME }}_${{ env.VERSION }}
+        upload_location: ${{ env.S3_BUCKET }}/${{ env.REPO_NAME }}_${{ env.VERSION }}
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: 'us-east-1'
