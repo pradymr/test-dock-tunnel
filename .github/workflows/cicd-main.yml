@@ -22,7 +22,10 @@ jobs:
     defaults:
       run:
         working-directory: main
-
+    
+    outputs:
+      branch: ${{ steps.extract_branch.outputs.branch }}
+      version: ${{ env.VERSION }}
       
     steps:
     
@@ -69,20 +72,44 @@ jobs:
         package_type: deb
         proj_file: "./dock-tunnel/DEBIAN/control"
         working_dir: main
-     
+        
+  build-and-upload:
+    needs: ci
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
+    strategy:
+      matrix:
+        env: [dev, prod]
+        
+
+    runs-on: ubuntu-latest
+
+    steps: 
+    - name: checkout main repo
+      uses: actions/checkout@v2
+      with:
+       ref: ${{needs.bump-version.outputs.branch}}
+       fetch-depth: 0
+    
+    - name: Checkout cicd repo
+      uses: actions/checkout@v2
+      with:
+        repository: pradymr/ci-test
+        ref: main
+        token: ${{ secrets.ACCESS_TOKEN }}
+        path: .github
+        
     - name: run build 
-      if: ${{ github.event_name == 'pull_request' || ( github.event_name == 'push' && github.event.before != 0000000000000000000000000000000000000000) }}
-      run: bash make-debs
+      run: bash ./.github/scripts/run-build.bash deb ./make-deb ./.env ${{ matrix.env }} dockgateway.canariadev.net dockgateway.canariatechnologies.com
 
 
     - name: upload artifacts in S3
-      uses: ./main/.github/actions/upload-artifacts
+      uses: ./.github/actions/upload-artifacts
       with:
-        branch_name: ${{ steps.extract_branch.outputs.branch }}
+        branch_name: ${{needs.ci.outputs.branch}}
         package_type: deb
         build_dir: ${{ env.BUILD_DIR }}
-        zip_name: ${{ env.REPO_NAME }}_${{ env.VERSION }}
-        upload_location: ${{ env.S3_BUCKET }}/${{ env.REPO_NAME }}_${{ env.VERSION }}
+        zip_name: ${{ env.REPO_NAME }}_${{needs.ci.outputs.version}}_${{ matrix.env }}
+        upload_location: ${{ env.S3_BUCKET }}/${{ env.REPO_NAME }}_${{needs.ci.outputs.version}}_${{ matrix.env }}
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: 'us-east-1'
