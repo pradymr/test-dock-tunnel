@@ -99,7 +99,7 @@ jobs:
         path: .github
         
     - name: run build 
-      run: bash ./.github/scripts/run-build.bash deb ./make-deb ./.env ${{ matrix.env }} dockgateway.canariadev.net dockgateway.canariatechnologies.com
+      run: bash ./.github/scripts/run-build.bash deb ./make-debs ./.env ${{ matrix.env }} dockgateway.canariadev.net dockgateway.canariatechnologies.com
 
 
     - name: upload artifacts in S3
