@@ -9,7 +9,9 @@ on:
 
   pull_request:
     types: [ opened, reopened, synchronize]
-
+  
+  workflow_dispatch:
+  
 env:
   BUILD_DIR: ./build/packages/*
   S3_BUCKET: s3://ci-test-dock-builds
@@ -72,10 +74,14 @@ jobs:
         package_type: deb
         proj_file: "./dock-tunnel/DEBIAN/control"
         working_dir: main
+    
+    - name: get current version
+      if: ${{ github.event_name == 'workflow_dispatch' }}
+      run: bash ./.github/scripts/get-version.bash nodejs "./dock-tunnel/DEBIAN/control"
         
   build-and-upload:
     needs: ci
-    if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
     strategy:
       matrix:
         env: [dev, prod]
