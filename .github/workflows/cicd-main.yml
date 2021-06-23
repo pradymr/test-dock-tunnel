@@ -125,6 +125,27 @@ jobs:
         versions=($(aws s3 ls ${{ env.S3_BUCKET }} --recursive | grep -i test-dock-tunnel | rev | cut -d' ' -f 1 | rev  | grep -i prod | \
         grep -i _[0-9]*\.[0-9]*\.[0-9]*_ | cut -d'_' -f 2))
         echo "${versions[*]}"
+        max=0.0.0
+        for v in ${versions[@]}; do
+            version1=max
+            version2=v
+            version1=${version1//./ }
+            version2=${version2//./ }
+            patch1=$(echo $version1 | awk '{print $3}')
+            minor1=$(echo $version1 | awk '{print $2}')
+            major1=$(echo $version1 | awk '{print $1}')
+
+            patch2=$(echo $version2 | awk '{print $3}')
+            minor2=$(echo $version2 | awk '{print $2}')
+            major2=$(echo $version2 | awk '{print $1}')
+
+            if [[ $major1 -lt $major2 ]]; then max=$v; 
+            elif [[ $minor1-lt $minor2 ]]; then max=$v;
+            elif [ $patch1 -lt $patch2 ]]; then max=$v;
+            fi;
+
+        done
+        echo $max                                       
       env:
          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
