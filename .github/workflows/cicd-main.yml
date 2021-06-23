@@ -107,7 +107,8 @@ jobs:
     - name: run build 
       run: bash ./.github/scripts/run-build.bash deb ./make-debs ./.env ${{ matrix.env }} dockgateway.canariadev.net dockgateway.canariatechnologies.com
     
-
+    - name: install deb
+      run: sudo dpkg -i ./build/packages/*.deb
 
     - name: upload artifacts in S3
       uses: ./.github/actions/upload-artifacts
@@ -120,4 +121,4 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: 'us-east-1'
-
+ 
