@@ -107,8 +107,6 @@ jobs:
     - name: run build 
       run: bash ./.github/scripts/run-build.bash deb ./make-debs ./.env ${{ matrix.env }} dockgateway.canariadev.net dockgateway.canariatechnologies.com
     
-    - name: install deb
-      run: sudo dpkg -i ./build/packages/*.deb
 
     - name: upload artifacts in S3
       uses: ./.github/actions/upload-artifacts
