@@ -127,8 +127,8 @@ jobs:
         echo "${versions[*]}"
         max=0.0.0
         for v in ${versions[@]}; do
-            version1=max
-            version2=v
+            version1=$max
+            version2=$v
             patch1=$(echo $version1 | cut -d'.' -f 3)
             minor1=$(echo $version1 | cut -d'.' -f 2)
             major1=$(echo $version1 | cut -d'.' -f 1)
