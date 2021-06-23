@@ -129,16 +129,18 @@ jobs:
         for v in ${versions[@]}; do
             version1=max
             version2=v
-            version1=${version1//./ }
-            version2=${version2//./ }
-            patch1=$(echo $version1 | awk '{print $3}')
-            minor1=$(echo $version1 | awk '{print $2}')
-            major1=$(echo $version1 | awk '{print $1}')
-
-            patch2=$(echo $version2 | awk '{print $3}')
-            minor2=$(echo $version2 | awk '{print $2}')
-            major2=$(echo $version2 | awk '{print $1}')
-
+            patch1=$(echo $version1 | cut -d'.' -f 3)
+            minor1=$(echo $version1 | cut -d'.' -f 2)
+            major1=$(echo $version1 | cut -d'.' -f 1)
+            echo $patch1
+            echo $minor1
+            echo $major1
+            patch2=$(echo $version2 | cut -d'.' -f 3)
+            minor2=$(echo $version2 | cut -d'.' -f 2)
+            major2=$(echo $version2 | cut -d'.' -f 1)
+            echo $patch2
+            echo $minor2
+            echo $major2
             if [[ $major1 -lt $major2 ]]; then max=$v; 
             elif [[ $minor1 -lt $minor2 ]]; then max=$v;
             elif [[ $patch1 -lt $patch2 ]]; then max=$v;
