@@ -121,7 +121,7 @@ jobs:
         AWS_DEFAULT_REGION: 'us-east-1'
         
     - name: list s3
-      run: aws s3 ls ${{ env.S3_BUCKET }} --recursive | grep -i test-dock-tunnel_[0-9]+\.[0-9]+\.[0-9]+_prod.zip | rev | cut -d' ' -f 1 | rev 
+      run: aws s3 ls ${{ env.S3_BUCKET }} --recursive | grep -i test-dock-tunnel | rev | cut -d' ' -f 1 | rev  | grep -i [0-9]+\.[0-9]+\.[0-9]+
       env:
          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
