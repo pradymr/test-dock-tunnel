@@ -140,8 +140,8 @@ jobs:
             major2=$(echo $version2 | awk '{print $1}')
 
             if [[ $major1 -lt $major2 ]]; then max=$v; 
-            elif [[ $minor1-lt $minor2 ]]; then max=$v;
-            elif [ $patch1 -lt $patch2 ]]; then max=$v;
+            elif [[ $minor1 -lt $minor2 ]]; then max=$v;
+            elif [[ $patch1 -lt $patch2 ]]; then max=$v;
             fi;
 
         done
