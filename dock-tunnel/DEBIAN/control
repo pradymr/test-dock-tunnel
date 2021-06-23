@@ -1,5 +1,5 @@
 Package: canaria-dock-tunnel
-Version: 0.7.0
+Version: 0.7.1-fix3.0
 Section: custom
 Priority: optional
 Architecture: all
