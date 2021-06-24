@@ -111,7 +111,7 @@ jobs:
     
 
     - name: upload artifacts in S3
-      if: ${{ needs.ci.outputs.runbuild == 'true' }}
+      if: ${{ needs.ci.outputs.runupload == 'true' }}
       uses: ./.github/actions/upload-artifacts
       with:
         branch_name: ${{needs.ci.outputs.branch}}
