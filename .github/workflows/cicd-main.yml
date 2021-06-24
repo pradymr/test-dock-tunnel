@@ -16,6 +16,7 @@ env:
   BUILD_DIR: ./build/packages/*
   S3_BUCKET: s3://ci-test-dock-builds
   REPO_NAME: ${{ github.event.repository.name }}
+  
 
 jobs:
   ci:
@@ -28,7 +29,8 @@ jobs:
     outputs:
       branch: ${{ steps.extract_branch.outputs.branch }}
       version: ${{ env.VERSION }}
-      
+      runupload: ${{ env.RUNUPLOAD }}
+      runbuild: ${{ env.RUNBUILD }}
     steps:
     
     - name: Checkout cicd repo
@@ -81,7 +83,7 @@ jobs:
         
   build-and-upload:
     needs: ci
-    if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ needs.ci.outputs.runbuild == 'true' }}
     strategy:
       matrix:
         env: [dev, prod]
@@ -109,6 +111,7 @@ jobs:
     
 
     - name: upload artifacts in S3
+      if: ${{ needs.ci.outputs.runbuild == 'true' }}
       uses: ./.github/actions/upload-artifacts
       with:
         branch_name: ${{needs.ci.outputs.branch}}
@@ -120,32 +123,5 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: 'us-east-1'
         
-    - name: list s3
-      run: |
-        versions=($(aws s3 ls ${{ env.S3_BUCKET }} --recursive | grep -i test-dock-tunnel | rev | cut -d' ' -f 1 | rev  | grep -i prod | \
-        grep -i _[0-9]*\.[0-9]*\.[0-9]*_ | cut -d'_' -f 2))
-     
-        max=0.0.0
-        for v in ${versions[@]}; do
-            version1=$max
-            version2=$v
-            patch1=$(echo $version1 | cut -d'.' -f 3)
-            minor1=$(echo $version1 | cut -d'.' -f 2)
-            major1=$(echo $version1 | cut -d'.' -f 1)
-
-            patch2=$(echo $version2 | cut -d'.' -f 3)
-            minor2=$(echo $version2 | cut -d'.' -f 2)
-            major2=$(echo $version2 | cut -d'.' -f 1)
-
-            if [[ $major1 -lt $major2 ]]; then max=$v; 
-            elif [[ $minor1 -lt $minor2 ]]; then max=$v;
-            elif [[ $patch1 -lt $patch2 ]]; then max=$v;
-            fi;
-
-        done
-        echo $max                                      
-      env:
-         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-         AWS_DEFAULT_REGION: 'us-east-1'
+ 
  
