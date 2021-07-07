@@ -57,14 +57,16 @@ jobs:
        path: main
        
       
-    - name: Configure cicd
+    - name: Configure CI
       shell: bash
       run: |
-          bash ./scripts/configure-cicd.bash $repo $main_dir
+          bash ./scripts/configure-cicd.bash $repo $main_dir $event $branch
       working-directory: ci-test
       env:
         repo: ${{ env.REPO_NAME }}
         main_dir: main
+        event: ${{ github.event_name }}
+        branch: ${{ steps.extract_branch.outputs.branch }}
         
     - name: set up git 
       run: bash ./.github/scripts/setup-git.bash
@@ -109,6 +111,7 @@ jobs:
     - name: run build 
       run: bash ./.github/scripts/run-build.bash deb ./make-debs ./.env ${{ matrix.env }} dockgateway.canariadev.net dockgateway.canariatechnologies.com
     
+  
 
     - name: upload artifacts in S3
       if: ${{ needs.ci.outputs.runupload == 'true' }}
