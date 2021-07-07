@@ -111,6 +111,11 @@ jobs:
     - name: run build 
       run: bash ./.github/scripts/run-build.bash deb ./make-debs ./.env ${{ matrix.env }} dockgateway.canariadev.net dockgateway.canariatechnologies.com
     
+    - name: Archive Debian Package
+      uses: actions/upload-artifact@v2
+      with:
+        name: canaria-dock-tunnel_${{needs.ci.outputs.version}}_all_${{ matrix.env }}.deb
+        path: ./build/packages/canaria-dock-tunnel_${{needs.ci.outputs.version}}_all.deb
   
 
     - name: upload artifacts in S3
