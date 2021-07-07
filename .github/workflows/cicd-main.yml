@@ -108,12 +108,11 @@ jobs:
         token: ${{ secrets.ACCESS_TOKEN }}
         path: .github
         
-    - name: get current version
+    - name: set current version
       run: |
-          bash ./.github/scripts/get-version.bash deb "./dock-tunnel/DEBIAN/control"
-    -  run: echo $ver
-       env: 
-         ver: ${{ env.VERSION }}
+          bash ./.github/scripts/set-version.bash deb "./dock-tunnel/DEBIAN/control" $ver
+      env: 
+         ver: ${{needs.ci.outputs.version}}
         
     - name: run build 
       run: bash ./.github/scripts/run-build.bash deb ./make-debs ./.env ${{ matrix.env }} dockgateway.canariadev.net dockgateway.canariatechnologies.com
