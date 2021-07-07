@@ -8,6 +8,7 @@
 # - Configures the tunnel service
 # - Copies team and gateway public keys to iot authorized_keys
 # - Expires the ubuntu account
+# - Install pi bluetooth
 #
 #######################################################################################################################
 
@@ -106,3 +107,8 @@ sudo rm -f /usr/local/bin/dock-timesync-fallback.bash
 # Expire the ubuntu account so it cannot be logged into
 echo "Expire the ubuntu account so it cannot be accessed"
 sudo usermod --expiredate 1 ubuntu
+
+# Install pi bluetooth
+echo "Installing pi bluetooth"
+sudo apt install pi-bluetooth 
+
