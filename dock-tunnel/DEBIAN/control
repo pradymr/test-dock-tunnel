@@ -1,5 +1,5 @@
 Package: canaria-dock-tunnel
-Version: 0.10.2
+Version: 0.10.3
 Depends: pi-bluetooth
 Section: custom
 Priority: optional
