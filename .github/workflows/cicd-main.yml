@@ -28,6 +28,7 @@ jobs:
       version: ${{ env.VERSION }}
       runupload: ${{ env.RUNUPLOAD }}
       runbuild: ${{ env.RUNBUILD }}
+      bumpversion: ${{ env.BUMPVERSION }}
     steps:
     
     - name: Checkout cicd repo
@@ -69,6 +70,7 @@ jobs:
       run: bash ./.github/scripts/setup-git.bash
       
     - name: bump version
+      if: ${{ env.BUMPVERSION == 'true' }}
       uses: ./main/.github/actions/bump-version
       with:
         branch_name: ${{ steps.extract_branch.outputs.branch }}
@@ -77,6 +79,7 @@ jobs:
         working_dir: main
     
     - name: get current version
+      if: ${{ github.event_name == 'workflow_dispatch' }}
       run: bash ./.github/scripts/get-version.bash deb "./dock-tunnel/DEBIAN/control"
         
   build-and-upload:
@@ -105,6 +108,7 @@ jobs:
         path: .github
         
     - name: set current version
+      if: $ ${{ needs.ci.outputs.bumpversion == 'true' }}
       run: |
           bash ./.github/scripts/set-version.bash deb "./dock-tunnel/DEBIAN/control" $ver
       env: 
