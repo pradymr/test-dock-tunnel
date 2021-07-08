@@ -108,7 +108,7 @@ jobs:
         path: .github
         
     - name: set current version
-      if: $ ${{ needs.ci.outputs.bumpversion == 'true' }}
+      if: ${{ needs.ci.outputs.bumpversion == 'true' }}
       run: |
           bash ./.github/scripts/set-version.bash deb "./dock-tunnel/DEBIAN/control" $ver
       env: 
