@@ -79,7 +79,7 @@ jobs:
         working_dir: main
     
     - name: get current version
-      if: ${{ github.event_name == 'workflow_dispatch' }}
+      if: ${{ env.BUMPVERSION == 'false' }}
       run: bash ./.github/scripts/get-version.bash deb "./dock-tunnel/DEBIAN/control"
         
   build-and-upload:
